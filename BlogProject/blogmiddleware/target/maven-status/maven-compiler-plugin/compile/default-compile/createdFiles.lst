@@ -1,0 +1,6 @@
+com\blogmiddleware\WebResolver.class
+com\blogmiddleware\WebIntilizer.class
+com\blogmiddleware\RestController\JobController.class
+com\blogmiddleware\controller\HomeController.class
+com\blogmiddleware\RestController\BlogController.class
+com\blogmiddleware\RestController\UserController.class

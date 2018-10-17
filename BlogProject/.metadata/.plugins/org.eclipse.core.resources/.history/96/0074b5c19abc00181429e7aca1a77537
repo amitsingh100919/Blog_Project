@@ -1,0 +1,29 @@
+var app= angular.module("demo",["ngRoute","ngCookies"])
+		app.config(function($routeProvider){
+			$routeProvider
+			.when("/register" ,{
+				templateUrl:"register.html"
+			})
+			.when("/signin",{
+				templateUrl:"sign-in.html"
+			})
+			.when("/addblog",{
+				templateUrl:"addBlog.html"
+			})
+			.when("/showAllBlog",{
+				templateUrl:"ShowAllBlog.html"
+			})
+			.when("/showBlog",{
+				templateUrl:"showBlog.html"
+			})
+			.when("/addjob",{
+				templateUrl:"AddJob.html"
+			})
+			.when("/showalljob",{
+				templateUrl:"ShowAllJob.html"
+			}).otherwise({templateUrl:"home.html"})
+app.run(function($rootScope,$cookieStore){
+	if($rootScope.user==undefined)
+		$rootScope.user=$cookieStore.get("userDetails")
+})
+		})

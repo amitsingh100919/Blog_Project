@@ -1,0 +1,13 @@
+com\amit\cruddemobackend\model\Job.class
+com\amit\cruddemobackend\DAOImpl\BlogDAOImpl.class
+com\amit\cruddemobackend\DAOImpl\JobDAOImpl.class
+com\amit\cruddemobackend\model\Blog.class
+com\amit\cruddemobackend\DAOImpl\ForumDAOImpl.class
+com\amit\cruddemobackend\DAO\JobDAO.class
+com\amit\cruddemobackend\model\Forum.class
+com\amit\cruddemobackend\DAOImpl\UserDAOImpl.class
+com\amit\cruddemobackend\DAO\ForumDAO.class
+com\amit\cruddemobackend\DAO\UserDAO.class
+com\amit\cruddemobackend\model\User.class
+com\amit\cruddemobackend\DAO\BlogDAO.class
+com\amit\cruddemobackend\config\DBConfig.class

@@ -1,0 +1,4 @@
+#Tomcat publish data
+#Wed Oct 17 11:23:30 IST 2018
+org.eclipse.jst.j2ee.server\:cruddemobackend=WEB-INF/lib/cruddemobackend-0.0.1-SNAPSHOT.jar
+org.eclipse.jst.jee.server\:/binary\:C\:\\Users\\DELL\\.m2\\repository\\org\\springframework\\spring-web\\4.3.5.RELEASE\\spring-web-4.3.5.RELEASE.jar=WEB-INF/lib/spring-web-4.3.5.RELEASE.jar

@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script src="accets/js/angular.js"></script>
+<script src="accets/js/angular-route.js"></script>
+<script src="accets/js/angular-cookies.js"></script>
+<script src="accets/js/routing.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+<link rel="stylesheet"
+	href="accets/css/bootstrap-css/bootstrap.min.css">
+	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.1/css/all.css" integrity="sha384-5sAR7xN1Nv6T6+dT2mhtzEpVJvfS3NScPQTrOxhwjIuvcA67KV2R5Jz6kr4abQsz" crossorigin="anonymous">
+<link rel="stylesheet" href="accets/css/notification.css"></link>
+<title>Blog</title>
+
+</head>
+<body ng-app="demo">
+
+
+	<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+		<a class="navbar-brand" href="#">Blog</a>
+		<button class="navbar-toggler" type="button" data-toggle="collapse"
+			data-target="#navbarSupportedContent"
+			aria-controls="navbarSupportedContent" aria-expanded="false"
+			aria-label="Toggle navigation">
+			<span class="navbar-toggler-icon"></span>
+		</button>
+
+		<div class="collapse navbar-collapse" id="navbarSupportedContent">
+			<ul class="navbar-nav mr-auto">
+				<li class="nav-item active"><a class="nav-link" href="#!home">Home
+						<span class="sr-only">(current)</span>
+				</a></li>
+				<li class="nav-item " ng-show="user.email==undefined"><a class="nav-link" href="#!register">Register
+						<span class="sr-only"></span>
+				</a></li>
+				<li class="nav-item" ng-show="user.email==undefined"><a class="nav-link" href="#!signin">Sign-in</a>
+				</li>
+				<li class="nav-item" ng-show="user.email!=undefined"><a class="nav-link" href="#!signin">Welcome {{user.firstname}}&nbsp;{{user.lastname}}</a>
+				</li>
+				<li class="nav-item "><a class="nav-link" href="#!addblog">Add
+						Blog<span class="sr-only">(current)</span>
+				</a></li>
+				<li class="nav-item "><a class="nav-link" href="#!aboutus">About
+						Us <span class="sr-only">(current)</span>
+				</a></li>
+				<li class="nav-item"><a class="nav-link" href="#!contactus">Contact
+						Us</a></li>
+				<li class="nav-item"><a class="nav-link" href="#!showAllBlog">ShowAllBlogs</a>
+				</li>
+				
+				<li class="nav-item"><a class="nav-link" href="#!addjob">Add Job</a></li>
+				<li class="nav-item"><a class="nav-link" href="#!showalljob">ShowAllJob</a></li>
+				<li class="nav-item" ng-show="user.role=='A'"><a class="nav-link" href="#!blogswaitingforapproval">BlogsWaiting</a></li>
+				 <div class="dropdown-divider"></div>
+          <a class="dropdown-item" href="#">Something else here</a>
+        </div>
+      </li>
+            
+          <li class="dropdown ml-5">
+            <a href="#"  data-toggle="dropdown" >
+            <i class="fas fa-globe-asia"></i>
+            <span class="row-number-notification" ng-if="notificationCount>0">{{notificationCount}}</span></a>
+            <ul class="dropdown-menu">
+           		 <span class="dropdown-content">
+            		<li ng-repeat="notification in listNotificationNotViewed">
+            		<a class="dropdown-item" href="#!getNotification/{{notification.notificationID}}">{{notification.blogTitle}} :: Your Blog request has been Noticed. Click to view your blog</a>
+            			
+           			</li>
+            	</span>
+            </ul>
+         </li>
+				<li class="nav-item" ng-show="user.email!=undefined"><a class="nav-link" href="#" ng-click="logout()">Sign-Out</a></li>
+			</ul>
+			
+					
+			
+			<form class="form-inline my-2 my-lg-0">
+				<input class="form-control mr-sm-2" type="search"
+					placeholder="Search" aria-label="Search">
+				<button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+			</form>
+		</div>
+	</nav>
+
+	<div id="carouselExampleIndicators" class="carousel slide"
+		data-ride="carousel">
+		<ol class="carousel-indicators">
+			<li data-target="#carouselExampleIndicators" data-slide-to="0"
+				class="active"></li>
+			<li data-target="#carouselExampleIndicators" data-slide-to="1"></li>
+			<li data-target="#carouselExampleIndicators" data-slide-to="2"></li>
+		</ol>
+		<div class="carousel-inner">
+			<div class="carousel-item active">
+				<img class="d-block w-100" src="#" alt="First slide">
+			</div>
+			<div class="carousel-item">
+				<img class="d-block w-100" src="#" alt="Second slide">
+			</div>
+			<div class="carousel-item">
+				<img class="d-block w-100" src="#" alt="Third slide">
+			</div>
+		</div>
+		<a class="carousel-control-prev" href="#carouselExampleIndicators"
+			role="button" data-slide="prev"> <span
+			class="carousel-control-prev-icon" aria-hidden="true"></span> <span
+			class="sr-only">Previous</span>
+		</a> <a class="carousel-control-next" href="#carouselExampleIndicators"
+			role="button" data-slide="next"> <span
+			class="carousel-control-next-icon" aria-hidden="true"></span> <span
+			class="sr-only">Next</span>
+		</a>
+	</div>
+	<div ng-view></div>
+	<div class="row">
+		<div class="col-12 text-center footer">
+			<p>Some copyright &copy its a footer</p>
+		</div>
+	</div>
+</body>
+<script src=>"accets/js/bootstrap.min.js"</script>
+<script src="accets/js/jquery.js"></script>
+<script src=>"accets/js/popper.js"</script>
+<script src="accets/controller/registerCtrl.js"></script>
+<script src="accets/controller/userValidation.js"></script>
+<script src="accets/controller/addBlog.js"></script>
+<script src="accets/controller/addJob.js"></script>
+</html>

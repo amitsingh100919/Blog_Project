@@ -1,0 +1,14 @@
+app.controller('homeCtrl',function($rootScope,$scope,$http,$location){
+	
+	$scope.getNotifications = function(){
+		console.log("in home ctrl")
+		$http.get("http://localhost:8081/blogmiddleware/getNotification").then(function(response){
+			$rootScope.notifications = response.data
+			$rootScope.notificationCount = $rootScope.notifications.length
+		},function(response){
+			if(response.status==401)
+				$location.url("/signin")
+		}
+		)
+	}
+})

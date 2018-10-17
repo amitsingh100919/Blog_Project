@@ -1,0 +1,5 @@
+package com.blogmiddleware.RestController;
+
+public class NotificationController {
+
+}

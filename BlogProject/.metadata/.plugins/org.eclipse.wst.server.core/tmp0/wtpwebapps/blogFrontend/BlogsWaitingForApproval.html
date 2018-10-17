@@ -1,0 +1,9 @@
+<div class="card" style="width: 18rem;" ng-controller="BlogController" ng-init="notApprovedBlogList()">
+  <img class="card-img-top" src="..." alt="Card image cap">
+  <div ng-if="waitingblogs.length==0">No blogs waiting for approval</div>
+  <div class="card-body" ng-repeat="blog in waitingblogs">
+    <h5 class="card-title">{{blog.blogTitle}}</h5>
+    <p class="card-text">{{blog.blogContent}}</p>
+    <a href="#" class="btn btn-primary" ng-click='blogDetail(blog.blogId)'>Go somewhere</a>
+  </div>
+</div>

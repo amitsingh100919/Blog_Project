@@ -1,0 +1,104 @@
+package com.blogmiddleware.RestController;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.amit.cruddemobackend.DAO.BlogDAO;
+import com.amit.cruddemobackend.model.Blog;
+
+@RestController
+public class BlogController {
+	
+	@Autowired
+	BlogDAO blogDAO;
+	
+	@GetMapping("/demo")
+	public ResponseEntity<String> getdemo(){
+		
+		return new ResponseEntity<String>("demo data", HttpStatus.OK);
+	}
+
+	@PostMapping("/createBlog")
+	public ResponseEntity<?> createBlog(@RequestBody Blog blog)
+	{
+		System.out.println("Create blog");
+		if(blogDAO.createBlog(blog)) {
+			return new ResponseEntity<String>("{\"message\":\"Blog created successfully\"}",HttpStatus.OK);
+		}
+		else {
+			return new ResponseEntity<String>("Blog not created",HttpStatus.OK);
+		}
+	}
+	
+	
+	@PostMapping("/updateBlog/{blogId}")
+	public ResponseEntity<?> updateBlog(@PathVariable("blogId") int blogId,@RequestBody Blog blog)
+	{
+		System.out.println("Update blog");
+		Blog ublog=blogDAO.getBlogById(blogId);
+		if(ublog==null) {
+			return new ResponseEntity<String>("Blog not updated",HttpStatus.NOT_FOUND);
+		}
+		ublog.setBlogTitle(blog.getBlogTitle());
+		ublog.setBlogContent(blog.getBlogContent());
+		ublog.setPostedBy(blog.getPostedBy());
+		ublog.setPostedOn(blog.getPostedOn());
+		ublog.setUserName(blog.getUserName());
+		ublog.setShared(blog.getShared());
+		ublog.setSharedBy(blog.getSharedBy());
+		ublog.setStatus(blog.getStatus());
+		ublog.setLiked(blog.getLiked());
+		blogDAO.updateBlog(ublog);
+		return new ResponseEntity<String>("Blog updated successfully",HttpStatus.OK);
+	}
+	
+	
+	@GetMapping("/getBlog/{blogId}")
+	public ResponseEntity<?> getBlog(@PathVariable("blogId") int blogId)
+	{
+		Blog gblog = blogDAO.getBlogById(blogId);
+		if(gblog==null) {
+			System.out.println("No blog found of Id="+blogId);
+			return new ResponseEntity<Blog>(gblog,HttpStatus.NOT_FOUND);
+		}
+		else {
+			return new ResponseEntity<Blog>(gblog,HttpStatus.OK);
+		}
+	}
+	
+	
+	@GetMapping("/getApproveBlog")
+	public ResponseEntity<?> getApproveBlog()
+	{
+		List<Blog> blogList = blogDAO.approvedBlogList();
+		if(blogList==null) {
+			return new ResponseEntity<String>("There is no approved blog",HttpStatus.NOT_FOUND);
+		}
+		else
+		{
+			return new ResponseEntity<List<Blog>>(blogList,HttpStatus.OK);
+		}
+	}
+	
+	
+	@GetMapping("/getNotApproveBlog")
+	public ResponseEntity<?> getNotApproveBlog()
+	{
+		List<Blog> blogList = blogDAO.notApprovedBlogList();
+		if(blogList==null) {
+			return new ResponseEntity<String>("There is no not approve blog",HttpStatus.NOT_FOUND);
+		}
+		else
+		{
+			return new ResponseEntity<List<Blog>>(blogList,HttpStatus.OK);
+		}
+	}
+}

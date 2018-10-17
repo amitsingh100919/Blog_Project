@@ -1,0 +1,197 @@
+package com.blogmiddleware.RestController;
+
+import java.util.List;
+
+import javax.servlet.http.HttpSession;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.amit.cruddemobackend.DAO.BlogDAO;
+import com.amit.cruddemobackend.DAO.NotificationDAO;
+import com.amit.cruddemobackend.DAO.UserDAO;
+import com.amit.cruddemobackend.model.Blog;
+import com.amit.cruddemobackend.model.Notification;
+import com.amit.cruddemobackend.model.User;
+
+@RestController
+public class BlogController {
+	
+	@Autowired
+	BlogDAO blogDAO;
+	@Autowired
+	UserDAO userDAO;
+	@Autowired
+	NotificationDAO notificationDAO;
+	
+	@GetMapping("/demo")
+	public ResponseEntity<String> getdemo(){
+		
+		return new ResponseEntity<String>("demo data", HttpStatus.OK);
+	}
+
+	@PostMapping("/createBlog")
+	public ResponseEntity<?> createBlog(@RequestBody Blog blog)
+	{
+		System.out.println("Create blog");
+		blog.setStatus("NA");
+		if(blogDAO.createBlog(blog)) {
+			
+			return new ResponseEntity<String>("{\"message\":\"Blog created successfully\"}",HttpStatus.OK);
+		}
+		else {
+			return new ResponseEntity<String>("{\"message\":\"Blog not created \"}",HttpStatus.NOT_FOUND);
+		}
+	}
+	
+	
+	@PostMapping("/updateBlog/{blogId}")
+	public ResponseEntity<?> updateBlog(@PathVariable("blogId") int blogId,@RequestBody Blog blog)
+	{
+		System.out.println("Update blog");
+		Blog ublog=blogDAO.getBlogById(blogId);
+		if(ublog==null) {
+			return new ResponseEntity<String>("{\"message\":\"Blog not updated\"}",HttpStatus.NOT_FOUND);
+		}
+		ublog.setBlogTitle(blog.getBlogTitle());
+		ublog.setBlogContent(blog.getBlogContent());
+		ublog.setPostedBy(blog.getPostedBy());
+		ublog.setPostedOn(blog.getPostedOn());
+		ublog.setUserName(blog.getUserName());
+		ublog.setSharein(blog.getSharein());
+		ublog.setSharedBy(blog.getSharedBy());
+		ublog.setStatus(blog.getStatus());
+		ublog.setLiked(blog.getLiked());
+		blogDAO.updateBlog(ublog);
+		return new ResponseEntity<String>("{\"message\":\"Blog updated successfully\"}",HttpStatus.OK);
+	}
+	
+	
+	@GetMapping("/getBlog/{blogId}")
+	public ResponseEntity<?> getBlog(@PathVariable("blogId") int blogId)
+	{
+		Blog gblog = blogDAO.getBlogById(blogId);
+		if(gblog==null) {
+			System.out.println("No blog found of Id="+blogId);
+			return new ResponseEntity<Blog>(gblog,HttpStatus.NOT_FOUND);
+		}
+		else {
+			return new ResponseEntity<Blog>(gblog,HttpStatus.OK);
+		}
+	}
+	
+	
+	@GetMapping("/getApproveBlog")
+	public ResponseEntity<?> getApproveBlog(HttpSession httpSession)
+	{
+		String email = (String)httpSession.getAttribute("email");
+		if(email==null) {
+			return new ResponseEntity<String>("{\"message\":\"Unauthorized access please sign-in\"}",HttpStatus.UNAUTHORIZED);
+		}
+		else
+		{
+			List<Blog> blogList = blogDAO.approvedBlogList();
+			return new ResponseEntity<List<Blog>>(blogList,HttpStatus.OK);
+		}
+	}
+	
+	
+	@GetMapping("/getNotApproveBlog")
+	public ResponseEntity<?> getNotApproveBlog()
+	{
+		
+		List<Blog> blogList = blogDAO.notApprovedBlogList();
+		if(blogList==null) {
+			return new ResponseEntity<String>("There is no not approve blog",HttpStatus.NOT_FOUND);
+		}
+		else
+		{
+			return new ResponseEntity<List<Blog>>(blogList,HttpStatus.OK);
+		}
+	}
+	
+	
+	@PutMapping("/approveBlog")
+	public ResponseEntity<?> approveBlog(@RequestBody Blog blog,HttpSession httpSession)
+	{
+		String email = (String)httpSession.getAttribute("email");
+		if(email==null) {
+			return new ResponseEntity<String>("{\"message\":\"Unauthorized access please sign-in\"}",HttpStatus.UNAUTHORIZED);
+		}
+		
+		User user = userDAO.getUserByEmail(email);
+		if(user.getRole()!='A')
+		{
+			return new ResponseEntity<String>("{\"message\":\"Access denied you are not authorized user\"}",HttpStatus.UNAUTHORIZED);
+		}
+		
+		blog.setStatus("A");
+		blogDAO.updateBlog(blog);
+		Notification notification = new Notification();
+		notification.setApprovalStatus("Approved");
+		notification.setBlogPostTitle(blog.getBlogTitle());
+		notification.setEmail(user.getEmail());
+		notificationDAO.addNotification(notification);
+		return new ResponseEntity<Blog>(blog,HttpStatus.OK);
+	}
+	
+	
+	@PutMapping("/rejectBlog/{rejectionReason}")
+	public ResponseEntity<?> rejectBlog(@RequestBody Blog blog,@PathVariable("rejectionReason") String rejectionReason ,HttpSession httpSession)
+	{
+		String email = (String)httpSession.getAttribute("email");
+		if(email==null) {
+			return new ResponseEntity<String>("{\"message\":\"Unauthorized access please sign-in\"}",HttpStatus.UNAUTHORIZED);
+		}
+		
+		User user = userDAO.getUserByEmail(email);
+		if(user.getRole()!='A')
+		{
+			return new ResponseEntity<String>("{\"message\":\"Access denied you are not authorized user\"}",HttpStatus.UNAUTHORIZED);
+		}
+		Notification notification = new Notification();
+		notification.setApprovalStatus("Rejected");
+		notification.setBlogPostTitle(blog.getBlogTitle());
+		notification.setEmail(user.getEmail());
+		notification.setRejectionReason(rejectionReason);
+		notificationDAO.addNotification(notification);
+		blogDAO.deleteBlog(blog);
+		return new ResponseEntity<Void>(HttpStatus.OK);
+	}
+	
+	
+	@GetMapping("/incrementLikes/{blogId}")
+	public ResponseEntity<?> incrementLikes(@PathVariable("blogId") int blogId)
+	{
+		if(blogDAO.incLikes(blogId))
+		{
+			return new ResponseEntity<String>("{\"message\":\"Success\"}",HttpStatus.OK);
+		}
+		else
+		{
+			return new ResponseEntity<String>("{\"message\":\"Failure\"}",HttpStatus.NOT_FOUND);
+		}
+	}
+	
+	
+	@GetMapping("/incrementDislikes/{blogId}")
+	public ResponseEntity<?> incrementDislikes(@PathVariable("blogId") int blogId)
+	{
+		if(blogDAO.disLikes(blogId))
+		{
+			return new ResponseEntity<String>("{\"message\":\"Success\"}",HttpStatus.OK);
+		}
+		else
+		{
+			return new ResponseEntity<String>("{\"message\":\"Failure\"}",HttpStatus.NOT_FOUND);
+		}
+	}
+}

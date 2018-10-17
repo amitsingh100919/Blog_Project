@@ -1,0 +1,24 @@
+<div class="container" ng-controller="BlogController">
+
+
+	<div class="panel panel-info">
+		<div class="panel-heading">
+			<p>{{ob.blogId}}</p>
+			<br> <b>Author : {{ob.postedBy}}</b><br> <b>Posted On:
+				{{ob.postedOn }}</b>
+		</div>
+		<div class="panel-body">
+			<p>{{ob.content}}</p>
+			<!-- content is blogPost.blogContent as HTML -->
+
+		</div>
+	</div>
+	<div>
+		<butten class="btn btn-info" ng-click="approveBlog(ob)">Approve</butten>
+		<butten class="btn btn-danger" ng-click="showText()">Reject</butten>
+	</div>
+	<div ng-show="isRejected">
+		<textarea rows="5" cols="5" ng-model="rejectionReason"></textarea>
+		<button class="btn btn-success" ng-click="rejectBlog(ob,rejectionReason)">Submit</button>
+	</div>
+</div>
